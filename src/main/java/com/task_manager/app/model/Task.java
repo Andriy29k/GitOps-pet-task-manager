@@ -12,13 +12,13 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 public class Task {
-    long id;
-    String title;
-    String description;
-    Status status;
-    Priority priority;
-    Date dueDate;
-    User user_id;
-    Category category_id;
-    Date created_at;
+    private Long id;
+    private String title;
+    private String description;
+    private Status status;
+    private Priority priority;
+    private Date dueDate;
+    private User user;
+    private Category category;
+    private Date createdAt;
 }

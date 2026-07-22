@@ -1,50 +1,57 @@
 package com.task_manager.app.service;
 
+import com.task_manager.app.exception.DuplicateEmailException;
+import com.task_manager.app.exception.UserNotFoundException;
 import com.task_manager.app.model.User;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class UserService {
-    ArrayList<User> users = new ArrayList<>();
 
-    public ArrayList<User> getUsers() {
-        return users;
+    private final Map<Long, User> users = new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
+
+    public List<User> getUsers() {
+        return List.copyOf(users.values());
     }
 
-    public void addUser(User user) throws Exception {
-        if(!users.contains(user)) {
-            emailCheck(user);
-            users.add(user);
+    public User addUser(User user) {
+        emailCheck(user.getEmail());
+        user.setId(idGenerator.getAndIncrement());
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    public User updateUser(long id, User changes) {
+        User existing = findById(id);
+        existing.setUsername(changes.getUsername());
+        existing.setEmail(changes.getEmail());
+        existing.setRole(changes.getRole());
+        return existing;
+    }
+
+    public void removeUser(long id) {
+        if (users.remove(id) == null) {
+            throw new UserNotFoundException(id);
         }
     }
 
-    public void updateUser(User user, long user_id) throws Exception {
-        User temp = null;
-        //if (users.contains(user.getId(user_id))) {
-        //    user.getUsername() == users.get(user_id).getUsername() ?  : temp.setUsername(user.getUsername());
-        //}
-    }
-
-    public void removeUser(User user) throws Exception {
-        if(users.contains(user)) {
-            users.remove(user);
+    public User findById(long id) {
+        User user = users.get(id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
         }
+        return user;
     }
 
-    public User findById(long id) throws Exception {
-        User tempUser = users.stream().filter(user -> user.getId() == id).findFirst().orElse(null);
-        if(tempUser != null) {
-            return tempUser;
-        } else  {
-            throw new Exception("User with id " + id + " not found");
-        }
-    }
-
-    public void emailCheck(User user) throws Exception {
-        for( int i = 0; i < users.size(); i++ ) {
-            if(users.get(i).getEmail().equals(user.getEmail())) {
-                throw new Exception("User with that email already created.");
-            }
+    private void emailCheck(String email) {
+        boolean exists = users.values().stream()
+                .anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
+        if (exists) {
+            throw new DuplicateEmailException(email);
         }
     }
 }

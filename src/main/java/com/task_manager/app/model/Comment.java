@@ -10,9 +10,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 public class Comment {
-    long id;
-    String text;
-    Task task_id;
-    User user_id;
-    Date created_at;
+    private Long id;
+    private String text;
+    private Task task;
+    private User user;
+    private Date createdAt;
 }

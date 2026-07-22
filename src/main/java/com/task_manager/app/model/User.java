@@ -11,10 +11,10 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 public class User {
-    long id;
-    String username;
-    String password_hash;
-    String email;
-    Role role;
-    Date created_at;
+    private Long id;
+    private String username;
+    private String passwordHash;
+    private String email;
+    private Role role;
+    private Date createdAt;
 }
