@@ -18,14 +18,14 @@ public class UserService {
         return List.copyOf(users.values());
     }
 
-    public User addUser(User user) {
+    public User addUser(User user) throws DuplicateEmailException {
         emailCheck(user.getEmail());
         user.setId(idGenerator.getAndIncrement());
         users.put(user.getId(), user);
         return user;
     }
 
-    public User updateUser(long id, User changes) {
+    public User updateUser(long id, User changes) throws UserNotFoundException {
         User existing = findById(id);
         existing.setUsername(changes.getUsername());
         existing.setEmail(changes.getEmail());
@@ -33,13 +33,13 @@ public class UserService {
         return existing;
     }
 
-    public void removeUser(long id) {
+    public void removeUser(long id) throws UserNotFoundException {
         if (users.remove(id) == null) {
             throw new UserNotFoundException(id);
         }
     }
 
-    public User findById(long id) {
+    public User findById(long id) throws UserNotFoundException {
         User user = users.get(id);
         if (user == null) {
             throw new UserNotFoundException(id);
@@ -47,7 +47,7 @@ public class UserService {
         return user;
     }
 
-    private void emailCheck(String email) {
+    private void emailCheck(String email) throws DuplicateEmailException {
         boolean exists = users.values().stream()
                 .anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
         if (exists) {
