@@ -3,6 +3,7 @@ package com.task_manager.app.service;
 import com.task_manager.app.exception.CategoryNotFoundException;
 import com.task_manager.app.model.Category;
 import com.task_manager.app.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+@Service
 public class CategoryService {
 
     private final Map<Long, Category> categories = new ConcurrentHashMap<>();

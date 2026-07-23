@@ -3,12 +3,14 @@ package com.task_manager.app.service;
 import com.task_manager.app.exception.TaskNotFoundException;
 import com.task_manager.app.model.Task;
 import com.task_manager.app.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Service
 public class TaskService {
 
     private final Map<Long, Task> tasks = new ConcurrentHashMap<>();

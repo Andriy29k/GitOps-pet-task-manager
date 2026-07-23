@@ -1,14 +1,17 @@
 package com.task_manager.app.service;
 
 import com.task_manager.app.exception.DuplicateEmailException;
+import com.task_manager.app.exception.EmailNotFound;
 import com.task_manager.app.exception.UserNotFoundException;
 import com.task_manager.app.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Service
 public class UserService {
 
     private final Map<Long, User> users = new ConcurrentHashMap<>();
@@ -53,5 +56,13 @@ public class UserService {
         if (exists) {
             throw new DuplicateEmailException(email);
         }
+    }
+
+    public User findByEmail(String email) {
+        User exist = users.containsValue(email) ? users.get(email) : null;
+        if (exist == null) {
+            throw new EmailNotFound(email);
+        }
+        return exist;
     }
 }
